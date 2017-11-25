@@ -30,7 +30,7 @@ const query = `{
     }
   }`;
 
-const data = client({ query })
+client({ query })
   .then(res => res.data.items)
   .then(
     (
