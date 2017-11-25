@@ -1,0 +1,59 @@
+import { writeFileSync } from 'fs';
+import * as RSS from 'rss';
+import { createApolloFetch } from 'apollo-fetch';
+
+const client = createApolloFetch({
+  uri: 'https://api.graphcms.com/simple/v1/rssexample',
+});
+
+const feed = new RSS({
+  title: 'Graphcms Test Feed',
+  description: 'This is a test feed',
+  feed_url: 'http://localhost:5000/rss.xml',
+  site_url: 'http://localhost:5000',
+  image_url: 'http://localhost:5000/graphcms_logo.png',
+  managingEditor: 'Graphcms',
+  webMaster: 'Graphcms',
+  copyright: '2017 Graphcms',
+  language: 'en',
+  pubDate: 'November 25, 2017 04:00:00 GMT',
+  ttl: 60,
+});
+const query = `{
+    items: allArticles {
+      guid: id
+      title
+      description: content
+      categories: tags
+      slug
+      date: createdAt
+    }
+  }`;
+
+const data = client({ query })
+  .then(res => res.data.items)
+  .then(
+    (
+      items: [
+        {
+          guid: string;
+          title: string;
+          description: string;
+          categories: [string];
+          slug: string;
+          date: string;
+        }
+      ]
+    ) => {
+      items.forEach(({ slug, ...item }) => {
+        feed.item({ ...item, url: `http://example.com/${slug}` });
+      });
+    }
+  )
+  .then(() => {
+    return feed.xml();
+  })
+  .then((xml: string) => {
+    console.log('Writing XML');
+    writeFileSync('./deploy/rss.xml', xml);
+  });
