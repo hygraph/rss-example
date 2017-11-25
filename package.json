@@ -13,7 +13,7 @@
   "devDependencies": {
     "nodemon": "^1.12.1",
     "serve": "^6.4.1",
-    "tsc": "^1.20150623.0"
+    "typescript": "^2.6.1"
   },
   "scripts": {
     "start": "node ./dist",
