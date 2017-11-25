@@ -1,5 +1,5 @@
 {
-  "name": "rss",
+  "name": "graphcms-rss-example",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Jonas Faber <jonas@graphcms.com>",
